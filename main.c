@@ -21,15 +21,13 @@ void addExpense(char *name, float price) {
     } else printf("List is full");
 }
 
-int calculateNetEarnings(float income) {
+void calculateNetEarnings(float income) {
     float totalSpending;
-    if (itemCount == 0) printf("Please add an expense first.");
-    else {
-        for (int i = 0; i < itemCount; i++) {
-            totalSpending += allExpenses[itemCount].price;
-        }
-        printf("Net Earnings: %f", income - totalSpending);
-    }
+    for (int i = 0; i < itemCount; i++) {
+        totalSpending += allExpenses[i].price;
+    } 
+    float net = income - totalSpending;
+    printf("\nNet Earnings: %.2f\n", net);
 }
 
 int main() {
@@ -41,19 +39,26 @@ int main() {
     printf("Enter income for the month: ");
     scanf("%f", &income);
 
-    do {
+    while (income > 0) {
         printf("\n1. Add Expense");
-        printf("\n2. Calculate Net Earnings");
+        printf("\n2. Show Net Earnings");
         printf("\n3. Exit");
-        printf("\nEnter choice: ");
+        printf("\nEnter choice(number): ");
         scanf("%d", &choice);
 
         while (choice != 3) {
             if (choice == 1) {
                 printf("\nEnter name of item/expense: ");
-                scanf("%d", &name);
+                getchar();
+                fgets(name, sizeof(name), stdin);
+                name[strcspn(name, "\n")] = 0;
                 printf("\nEnter price of item/expense: ");
-                scanf("%f", &price);
+                if (scanf("%f", &price) != 1) {
+                    printf("Invalid price\n");
+                    while (getchar() != '\n');
+                    break;
+                }
+                addExpense(name, price);
                 break;
             }
             if (choice == 2) {
@@ -61,6 +66,5 @@ int main() {
                 break;
             }
         }
-    } while (income > 0);
-    return 0;
+    } 
 }
